@@ -5,6 +5,7 @@ from .models import Category, Product, Images
 
 # Create your views here.
 
+print("fn24 salom")
 
 class Index(View):
     def get(self, request, pk=None):
