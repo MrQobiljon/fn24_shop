@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Images
+from .models import Category, Product, Images, Review
 
 # Register your models here.
 
@@ -22,3 +22,8 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [
         ImageInline
     ]
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'text')

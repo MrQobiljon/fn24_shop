@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here.
 
@@ -75,3 +77,26 @@ class Images(models.Model):
         verbose_name = "Rasm"
         verbose_name_plural = "Rasmlar"
 
+
+class Review(models.Model):
+    text = models.CharField(max_length=1000, verbose_name="Izoh matni")
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,
+                             related_name="reviews",
+                             verbose_name="Foydalanuvchi")
+    full_name = models.CharField(max_length=64, verbose_name="To'liq ismi")
+    profession = models.CharField(max_length=100, null=True, verbose_name="Kasbi")
+    rating = models.IntegerField(validators=[
+        MinValueValidator(1, "Kamida 1 bo'lishi kerak"),
+        MaxValueValidator(5, "Eng ko'pi bilan 5 bo'lishi kerak")
+    ], verbose_name="Bahosi")
+    created = models.DateTimeField(auto_now_add=True, verbose_name="Qo'shilgan vaqti!")
+
+    def __str__(self):
+        return f"{self.full_name} | {self.text[:100]}"
+
+    class Meta:
+        verbose_name = "Izoh"
+        verbose_name_plural = "Izohlar"
+
+    def get_range(self):
+        return [1, 2, 3, 4, 5]

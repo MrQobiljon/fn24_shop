@@ -3,6 +3,44 @@
 {% load shop_tags %}
 
 {% block hero %}
+<style>
+    /* From Uiverse.io by andrew-demchenk0 */
+.rating:not(:checked) > input {
+  position: absolute;
+  appearance: none;
+}
+
+.rating:not(:checked) > label {
+  float: right;
+  cursor: pointer;
+  font-size: 30px;
+  color: #666;
+}
+
+.rating:not(:checked) > label:before {
+  content: '★';
+}
+
+.rating > input:checked + label:hover,
+.rating > input:checked + label:hover ~ label,
+.rating > input:checked ~ label:hover,
+.rating > input:checked ~ label:hover ~ label,
+.rating > label:hover ~ input:checked ~ label {
+  color: #e58e09;
+}
+
+.rating:not(:checked) > label:hover,
+.rating:not(:checked) > label:hover ~ label {
+  color: #ff9e0b;
+}
+
+.rating > input:checked ~ label {
+  color: #ffa723;
+}
+</style>
+
+
+
 <!-- Hero Start -->
 <div class="container-fluid py-5 mb-5 hero-header">
 <div class="container py-5">
@@ -528,11 +566,12 @@
                 <h1 class="display-5 mb-5 text-dark">Our Client Saying!</h1>
             </div>
             <div class="owl-carousel testimonial-carousel">
+                {% for review in reviews %}
                 <div class="testimonial-item img-border-radius bg-light rounded p-4">
                     <div class="position-relative">
                         <i class="fa fa-quote-right fa-2x text-secondary position-absolute" style="bottom: 30px; right: 0;"></i>
                         <div class="mb-4 pb-4 border-bottom border-secondary">
-                            <p class="mb-0">Lorem Ipsum is simply dummy text of the printing Ipsum has been the industry's standard dummy text ever since the 1500s,
+                            <p class="mb-0">{{ review.text }}
                             </p>
                         </div>
                         <div class="d-flex align-items-center flex-nowrap">
@@ -540,71 +579,53 @@
                                 <img src="{% static 'img/testimonial-1.jpg' %}" class="img-fluid rounded" style="width: 100px; height: 100px;" alt="">
                             </div>
                             <div class="ms-4 d-block">
-                                <h4 class="text-dark">Client Name</h4>
-                                <p class="m-0 pb-3">Profession</p>
+                                <h4 class="text-dark">{{ review.full_name }}</h4>
+                                <p class="m-0 pb-3">{{ review.profession }}</p>
                                 <div class="d-flex pe-5">
+                                    {% for i in review.get_range %}
+                                    {% if i < review.rating %}
                                     <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
+                                    {% else %}
                                     <i class="fas fa-star"></i>
+                                    {% endif %}
+                                    {% endfor %}
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="testimonial-item img-border-radius bg-light rounded p-4">
-                    <div class="position-relative">
-                        <i class="fa fa-quote-right fa-2x text-secondary position-absolute" style="bottom: 30px; right: 0;"></i>
-                        <div class="mb-4 pb-4 border-bottom border-secondary">
-                            <p class="mb-0">Lorem Ipsum is simply dummy text of the printing Ipsum has been the industry's standard dummy text ever since the 1500s,
-                            </p>
-                        </div>
-                        <div class="d-flex align-items-center flex-nowrap">
-                            <div class="bg-secondary rounded">
-                                <img src="{% static 'img/testimonial-1.jpg' %}" class="img-fluid rounded" style="width: 100px; height: 100px;" alt="">
-                            </div>
-                            <div class="ms-4 d-block">
-                                <h4 class="text-dark">Client Name</h4>
-                                <p class="m-0 pb-3">Profession</p>
-                                <div class="d-flex pe-5">
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="testimonial-item img-border-radius bg-light rounded p-4">
-                    <div class="position-relative">
-                        <i class="fa fa-quote-right fa-2x text-secondary position-absolute" style="bottom: 30px; right: 0;"></i>
-                        <div class="mb-4 pb-4 border-bottom border-secondary">
-                            <p class="mb-0">Lorem Ipsum is simply dummy text of the printing Ipsum has been the industry's standard dummy text ever since the 1500s,
-                            </p>
-                        </div>
-                        <div class="d-flex align-items-center flex-nowrap">
-                            <div class="bg-secondary rounded">
-                                <img src="{% static 'img/testimonial-1.jpg' %}" class="img-fluid rounded" style="width: 100px; height: 100px;" alt="">
-                            </div>
-                            <div class="ms-4 d-block">
-                                <h4 class="text-dark">Client Name</h4>
-                                <p class="m-0 pb-3">Profession</p>
-                                <div class="d-flex pe-5">
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
     <!-- Tastimonial End -->
+
+{% if request.user.is_authenticated %}
+<div>
+
+    <form method="post" style="width: 500px; display: block; margin: 0 auto;">
+        {% csrf_token %}
+        <input required type="text" placeholder="Full name" name="full_name" class="form-control mb-3">
+        <input required type="text" placeholder="Profession" name="profession" class="form-control mb-3">
+        <textarea required placeholder="Text" name="text" class="form-control mb-3"></textarea>
+        <div class="rating">
+          <input value="5" name="rate" id="star5" type="radio">
+          <label title="text" for="star5"></label>
+          <input value="4" name="rate" id="star4" type="radio">
+          <label title="text" for="star4"></label>
+          <input value="3" name="rate" id="star3" type="radio">
+          <label title="text" for="star3"></label>
+          <input value="2" name="rate" id="star2" type="radio">
+          <label title="text" for="star2"></label>
+          <input value="1" name="rate" id="star1" type="radio" checked="">
+          <label title="text" for="star1"></label>
+        </div><br><br>
+
+        <button type="submit" class="btn btn-primary mt-3" style="display: block; margin: 0 auto;">Save</button>
+
+    </form>
+</div>
+{% endif %}
+
 {% endblock content %}
