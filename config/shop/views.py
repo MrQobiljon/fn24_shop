@@ -5,7 +5,7 @@ from .models import Category, Product, Images
 
 # Create your views here.
 
-print("fn24 salom")
+
 
 class Index(View):
     def get(self, request, pk=None):
@@ -13,6 +13,7 @@ class Index(View):
         categories = Category.objects.filter(parent=None)
         context = {
             "products": products,
-            "categories": categories
+            "categories": categories,
+            'organic_products': products.filter(quality='or')
         }
         return render(request, "index.html", context)
