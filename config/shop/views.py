@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
-from django.views.generic import View
+from django.views.generic import (View, ListView, DetailView, UpdateView, CreateView, DeleteView)
+from django.db.models import Q
 
 from .models import Category, Product, Images, Review
 
 # Create your views here.
-
 
 
 class Index(View):
@@ -41,3 +41,21 @@ class Index(View):
         except:
             pass
         return redirect('home')
+
+
+class ShopView(ListView):
+    model = Product
+    template_name = 'shop/shop.html'
+    context_object_name = "products"
+    extra_context = {
+        "title": "Barcha mahsulotlar",
+        "subcategories": Category.objects.exclude(parent=None)
+    }
+
+
+class ProductByCategory(ShopView):
+    def get_queryset(self):
+        word = self.request.GET.get("q")
+        if word:
+            return Product.objects.filter(Q(name__icontains=word) | Q(description__icontains=word))
+        return Product.objects.filter(category__slug=self.kwargs.get("slug"))

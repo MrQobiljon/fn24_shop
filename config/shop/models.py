@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+import math
 
 # Create your models here.
 
@@ -63,6 +64,13 @@ class Product(models.Model):
         if images:
             return images[0].image.url
         return "https://www.nugaedu.gr/style/images/no-image.jpg"
+
+    def get_discount(self):
+        '''Chegirmali narxini topish'''
+        if self.discount:
+            price = round((self.price - (self.price * self.discount) / 100), 2)
+            return price
+        return None
 
 
 class Images(models.Model):
