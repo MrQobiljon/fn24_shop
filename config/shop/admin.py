@@ -1,7 +1,10 @@
 from django.contrib import admin
-from .models import Category, Product, Images, Review
+from .models import Category, Product, Images, Review, User
 
 # Register your models here.
+
+admin.site.register(User)
+
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):

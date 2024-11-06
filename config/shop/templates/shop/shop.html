@@ -34,9 +34,13 @@
         <div class="container-fluid page-header py-5">
             <h1 class="text-center text-white display-6">Shop</h1>
             <ol class="breadcrumb justify-content-center mb-0">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                {% if category_name %}
+                <li class="breadcrumb-item"><a href="{% url 'shop' %}">Shop</a></li>
+                <li class="breadcrumb-item active text-white">{{ category_name }}</li>
+                {% else %}
                 <li class="breadcrumb-item active text-white">Shop</li>
+                {% endif %}
             </ol>
         </div>
         <!-- Single Page Header End -->
@@ -62,10 +66,9 @@
                                 <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
                                     <label for="fruits">Default Sorting:</label>
                                     <select id="fruits" name="fruitlist" class="border-0 form-select-sm bg-light me-3" form="fruitform">
-                                        <option value="volvo">Nothing</option>
-                                        <option value="saab">Popularity</option>
-                                        <option value="opel">Organic</option>
-                                        <option value="audi">Fantastic</option>
+                                        <option value="">Nothing</option>
+                                        <option value="or">Organic</option>
+                                        <option value="gmo">GMO</option>
                                     </select>
                                 </div>
                             </div>
@@ -244,5 +247,43 @@
             </div>
         </div>
         <!-- Fruits Shop End-->
+
+
+    <script>
+
+    const url = new URL(window.location);
+    let fruits = document.querySelector('#fruits');
+    fruits.value = url.searchParams.get('sorted-by');
+
+
+        const updateParam = (key, value) => {
+        const url = new URL(window.location);
+        url.searchParams.set(key, value);
+        window.location.href = url;
+        // fruits.value = url.searchParams.get('sorted-by');
+    }
+
+      fruits = document.getElementById("fruits")
+      fruits.addEventListener('change', function() {
+      updateParam("sorted-by", this.value)
+    });
+
+
+
+
+
+// <!--        const rate = () => {-->
+// <!--            fetch(`/`, {-->
+// <!--                method: 'GET',-->
+// <!--                headers: {-->
+// <!--                    'Content-Type': 'application/json'-->
+// <!--                }-->
+// <!--            }).then(rest => {-->
+// <!--                window.location.reload();-->
+// <!--                // you may want to update the rating here-->
+// <!--                // to simplify stuff, I just reload the page-->
+// <!--            })-->
+// <!--        }-->
+    </script>
 
 {% endblock content %}

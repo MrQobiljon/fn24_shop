@@ -52,10 +52,28 @@ class ShopView(ListView):
         "subcategories": Category.objects.exclude(parent=None)
     }
 
-
-class ProductByCategory(ShopView):
     def get_queryset(self):
+
+        sorted_by = self.request.GET.get('sorted-by')
+        if sorted_by:
+            return Product.objects.filter(quality=sorted_by)
+
         word = self.request.GET.get("q")
         if word:
             return Product.objects.filter(Q(name__icontains=word) | Q(description__icontains=word))
-        return Product.objects.filter(category__slug=self.kwargs.get("slug"))
+
+        if self.kwargs.get("slug"):
+            return Product.objects.filter(category__slug=self.kwargs.get("slug"))
+        else:
+            return Product.objects.all()
+
+
+
+class ProductByCategory(ShopView):
+    def get_context_data(self, *args, object_list=None, **kwargs):
+        context = super().get_context_data(*args, object_list=None, **kwargs)
+        category_name = Category.objects.get(slug=self.kwargs.get("slug")).name
+        context["title"] = f"{category_name} mahsulotlari."
+        context['category_name'] = category_name
+        return context
+
